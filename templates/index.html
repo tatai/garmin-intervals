@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-F0WGS079PG"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-F0WGS079PG');
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ t.pageTitle }}</title>
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body>
+    <div class="app-bar">
+        <h1>{{ t.appTitle }}</h1>
+        <button class="lang-toggle" id="langToggle" data-current-lang="{{ lang }}">
+            {{ 'EN' if lang == 'es' else 'ES' }}
+        </button>
+    </div>
+
+    <div class="container">
+        <div id="alert" class="alert">
+            <span class="material-icons">info</span>
+            <span id="alertMessage"></span>
+        </div>
+
+        <div class="card">
+            <h2>{{ t.appTitle }}</h2>
+            <p>{{ t.appDescription }}</p>
+
+            <form id="uploadForm">
+                <div class="form-group">
+                    <label class="form-label">{{ t.uploadLabel }}</label>
+                    <div class="file-input-wrapper">
+                        <input type="file" id="fileInput" class="file-input" accept=".csv">
+                        <button type="button" class="file-input-button" onclick="document.getElementById('fileInput').click()">
+                            <span class="material-icons">upload_file</span>
+                            <span>{{ t.uploadButton }}</span>
+                        </button>
+                        <span class="file-name" id="fileName">{{ t.noFileSelected }}</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">{{ t.columnsLabel }}</label>
+
+                    <div class="column-presets">
+                        <span class="presets-label">{{ t.presetsLabel if t.presetsLabel else 'Quick presets:' }}</span>
+                        <button type="button" class="preset-button" data-preset="series">
+                            <span class="material-icons">flash_on</span>
+                            <span>{{ t.presetSeries if t.presetSeries else 'Series' }}</span>
+                        </button>
+                        <button type="button" class="preset-button" data-preset="training">
+                            <span class="material-icons">directions_run</span>
+                            <span>{{ t.presetTraining if t.presetTraining else 'Entrenamiento' }}</span>
+                        </button>
+                    </div>
+
+                    <input
+                        type="text"
+                        id="columnsInput"
+                        class="text-field"
+                        placeholder="{{ t.columnsPlaceholder }}"
+                        value=""
+                    >
+                    <div class="helper-text">
+                        {{ t.columnsHelper }}
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="button button-primary" id="viewButton">
+                        <span class="material-icons">visibility</span>
+                        <span>{{ t.viewButton }}</span>
+                    </button>
+                    <button type="button" class="button button-secondary" id="downloadButton">
+                        <span class="material-icons">download</span>
+                        <span>{{ t.downloadButton }}</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+        </div>
+
+        <div id="resultsContainer" class="card results-container">
+            <h2>{{ t.resultsTitle }}</h2>
+            <p>
+                <span id="rowsCount">0</span> <span>{{ t.rowsCount }}</span>
+            </p>
+
+            <div class="view-toggle" id="viewToggle" style="display: none;">
+                <button class="toggle-button active" id="tableViewBtn" data-view="table">
+                    <span class="material-icons">table_chart</span>
+                    <span>{{ t.tableView if t.tableView else 'Table View' }}</span>
+                </button>
+                <button class="toggle-button" id="csvViewBtn" data-view="csv">
+                    <span class="material-icons">code</span>
+                    <span>{{ t.csvView if t.csvView else 'CSV View' }}</span>
+                </button>
+            </div>
+
+            <div class="table-wrapper" id="tableView">
+                <table id="resultsTable">
+                    <thead id="tableHead"></thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+
+            <div class="csv-wrapper" id="csvView" style="display: none;">
+                <div class="csv-actions">
+                    <button class="button button-secondary" id="copyCsvBtn">
+                        <span class="material-icons">content_copy</span>
+                        <span>{{ t.copyCSV if t.copyCSV else 'Copy CSV' }}</span>
+                    </button>
+                </div>
+                <pre id="csvText" class="csv-text"></pre>
+            </div>
+
+            <div id="noResults" class="no-results" style="display: none;">
+                {{ t.noResults }}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        window.APP_CONFIG = {
+            lang: '{{ lang }}',
+            translations: {{ t_json | safe }}
+        };
+    </script>
+    <script src="{{ url_for('static', filename='app.js') }}"></script>
+</body>
+</html>
+

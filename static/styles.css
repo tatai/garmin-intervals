@@ -1,0 +1,451 @@
+/**
+ * Garmin CSV Filter - Styles
+ * Material Design inspired styles for the application
+ */
+
+/* ===== Base Styles ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+/* ===== App Bar ===== */
+.app-bar {
+    background-color: #1976d2;
+    color: white;
+    padding: 16px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.app-bar h1 {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+.lang-toggle {
+    background: transparent;
+    border: 1px solid white;
+    color: white;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.lang-toggle:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ===== Container & Cards ===== */
+.container {
+    max-width: 1200px;
+    margin: 24px auto;
+    padding: 0 16px;
+}
+
+.card {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.card h2 {
+    font-size: 18px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #1976d2;
+}
+
+.card p {
+    color: #666;
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+/* ===== Form Elements ===== */
+.form-group {
+    margin-bottom: 24px;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Column Presets */
+.column-presets {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+
+.presets-label {
+    font-size: 13px;
+    color: #666;
+    font-weight: 500;
+}
+
+.preset-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 6px 12px;
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #90caf9;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.preset-button .material-icons {
+    font-size: 16px;
+}
+
+.preset-button:hover {
+    background-color: #bbdefb;
+    border-color: #64b5f6;
+}
+
+.preset-button:active {
+    background-color: #90caf9;
+    transform: scale(0.98);
+}
+
+.file-input-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-input-button {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.file-input-button:hover {
+    background-color: #1565c0;
+}
+
+.file-input-button .material-icons {
+    margin-right: 8px;
+}
+
+.file-name {
+    margin-left: 16px;
+    color: #666;
+    font-size: 14px;
+}
+
+.text-field {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: 'Roboto', sans-serif;
+    transition: border-color 0.3s;
+}
+
+.text-field:focus {
+    outline: none;
+    border-color: #1976d2;
+}
+
+.helper-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* ===== Buttons ===== */
+.button-group {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.button {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+    display: inline-flex;
+    align-items: center;
+}
+
+.button .material-icons {
+    margin-right: 8px;
+    font-size: 20px;
+}
+
+.button-primary {
+    background-color: #1976d2;
+    color: white;
+}
+
+.button-primary:hover {
+    background-color: #1565c0;
+}
+
+.button-secondary {
+    background-color: #4caf50;
+    color: white;
+}
+
+.button-secondary:hover {
+    background-color: #45a049;
+}
+
+.button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* ===== Results Section ===== */
+.results-container {
+    display: none;
+}
+
+.results-container.visible {
+    display: block;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+}
+
+th {
+    background-color: #f5f5f5;
+    padding: 12px;
+    text-align: left;
+    font-weight: 500;
+    border-bottom: 2px solid #ddd;
+    white-space: nowrap;
+}
+
+td {
+    padding: 12px;
+    border-bottom: 1px solid #eee;
+}
+
+tr:hover {
+    background-color: #f9f9f9;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+    font-size: 16px;
+}
+
+/* ===== View Toggle ===== */
+.view-toggle {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 8px;
+}
+
+.toggle-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px;
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    color: #666;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.toggle-button .material-icons {
+    font-size: 18px;
+}
+
+.toggle-button:hover {
+    color: #1976d2;
+    background-color: rgba(25, 118, 210, 0.05);
+}
+
+.toggle-button.active {
+    color: #1976d2;
+    border-bottom-color: #1976d2;
+}
+
+/* ===== CSV View ===== */
+.csv-wrapper {
+    margin-top: 16px;
+}
+
+.csv-actions {
+    margin-bottom: 12px;
+}
+
+.csv-text {
+    background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 16px;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-x: auto;
+    white-space: pre;
+    max-height: 500px;
+    overflow-y: auto;
+}
+
+/* ===== Alerts ===== */
+.alert {
+    padding: 16px;
+    border-radius: 4px;
+    margin-bottom: 16px;
+    display: none;
+    align-items: center;
+}
+
+.alert.visible {
+    display: flex;
+}
+
+.alert .material-icons {
+    margin-right: 12px;
+}
+
+.alert-error {
+    background-color: #ffebee;
+    color: #c62828;
+}
+
+.alert-success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.alert-info {
+    background-color: #e3f2fd;
+    color: #1565c0;
+}
+
+/* ===== Loading Indicator ===== */
+.loading {
+    display: none;
+    text-align: center;
+    padding: 20px;
+}
+
+.loading.visible {
+    display: block;
+}
+
+.spinner {
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #1976d2;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+    .app-bar {
+        padding: 12px 16px;
+    }
+
+    .app-bar h1 {
+        font-size: 16px;
+    }
+
+    .container {
+        padding: 0 8px;
+    }
+
+    .card {
+        padding: 16px;
+    }
+
+    .column-presets {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .preset-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .button-group {
+        flex-direction: column;
+    }
+
+    .button {
+        width: 100%;
+        justify-content: center;
+    }
+
+    table {
+        font-size: 12px;
+    }
+
+    th, td {
+        padding: 8px;
+    }
+}
+
+

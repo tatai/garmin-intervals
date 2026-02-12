@@ -1,0 +1,38 @@
+{
+  "pageTitle": "Filtro CSV Garmin",
+  "appTitle": "Filtro de Datos de Entrenamiento Garmin",
+  "appDescription": "Sube tu archivo CSV de intervalos generado de Garmin Connect y selecciona las columnas que quieres extraer",
+  "uploadLabel": "Intervalos (archivo CSV)",
+  "uploadButton": "Elegir archivo",
+  "noFileSelected": "No hay archivo seleccionado",
+  "columnsLabel": "Columnas a extraer",
+  "columnsPlaceholder": "Introduce nombres de columnas separados por comas",
+  "columnsHelper": "Selecciona una plantilla rápida o introduce nombres de columnas personalizadas separados por comas",
+  "presetsLabel": "Plantillas rápidas:",
+  "presetSeries": "Series",
+  "presetTraining": "Entrenamiento",
+  "viewButton": "Ver resultados",
+  "downloadButton": "Descargar CSV",
+  "resultsTitle": "Resultados filtrados",
+  "rowsCount": "filas encontradas",
+  "noResults": "No hay datos para mostrar",
+  "tableView": "Vista de tabla",
+  "csvView": "Vista CSV",
+  "copyCSV": "Copiar CSV",
+  "errors": {
+    "noFile": "Por favor selecciona un archivo",
+    "fileTooLarge": "El archivo es demasiado grande. El tamaño máximo es 1MB",
+    "invalidFormat": "Por favor selecciona un archivo CSV válido",
+    "noColumns": "Por favor introduce al menos un nombre de columna",
+    "columnsNotFound": "Las siguientes columnas no se encontraron en el archivo CSV",
+    "invalidCSV": "Archivo CSV no válido",
+    "processingError": "Error al procesar el archivo",
+    "networkError": "Error de red. Por favor intenta de nuevo",
+    "copyFailed": "Error al copiar al portapapeles"
+  },
+  "success": {
+    "processed": "Archivo procesado correctamente",
+    "downloaded": "Archivo descargado correctamente",
+    "copied": "CSV copiado al portapapeles"
+  }
+}

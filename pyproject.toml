@@ -1,0 +1,10 @@
+[project]
+name = "garmin"
+version = "0.1.0"
+description = "Web application to filter Garmin Connect training data CSV files"
+requires-python = ">=3.10"
+dependencies = [
+    "flask>=3.1.2",
+    "gunicorn>=21.2.0",
+]
+

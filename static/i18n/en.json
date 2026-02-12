@@ -1,0 +1,38 @@
+{
+  "pageTitle": "Garmin CSV Filter",
+  "appTitle": "Garmin Training Data Filter",
+  "appDescription": "Upload your interval CSV file from Garmin Connect and select the columns you want to extract",
+  "uploadLabel": "Intervals (CSV File)",
+  "uploadButton": "Choose File",
+  "noFileSelected": "No file selected",
+  "columnsLabel": "Columns to extract",
+  "columnsPlaceholder": "Enter comma-separated column names",
+  "columnsHelper": "Select a quick preset or enter custom column names separated by commas",
+  "presetsLabel": "Quick presets:",
+  "presetSeries": "Series",
+  "presetTraining": "Training",
+  "viewButton": "View Results",
+  "downloadButton": "Download CSV",
+  "resultsTitle": "Filtered Results",
+  "rowsCount": "rows found",
+  "noResults": "No data to display",
+  "tableView": "Table View",
+  "csvView": "CSV View",
+  "copyCSV": "Copy CSV",
+  "errors": {
+    "noFile": "Please select a file",
+    "fileTooLarge": "File is too large. Maximum size is 1MB",
+    "invalidFormat": "Please select a valid CSV file",
+    "noColumns": "Please enter at least one column name",
+    "columnsNotFound": "The following columns were not found in the CSV file",
+    "invalidCSV": "Invalid CSV file",
+    "processingError": "Error processing file",
+    "networkError": "Network error. Please try again",
+    "copyFailed": "Failed to copy to clipboard"
+  },
+  "success": {
+    "processed": "File processed successfully",
+    "downloaded": "File downloaded successfully",
+    "copied": "CSV copied to clipboard"
+  }
+}
