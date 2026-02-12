@@ -6,38 +6,32 @@ const COLUMN_PRESETS = {
     training: 'Vueltas,Tiempo,Tiempo acumulado,Distanciakm,Ritmo mediomin/km,Frecuencia cardiaca mediappm,Ascenso totalm,Descenso totalm'
 };
 
-document.addEventListener('DOMContentLoaded', () => {
+$(document).ready(function() {
     setupEventListeners();
 });
 
 function setupEventListeners() {
-    document.getElementById('langToggle').addEventListener('click', toggleLanguage);
-    document.getElementById('fileInput').addEventListener('change', handleFileSelect);
-    document.getElementById('viewButton').addEventListener('click', handleView);
-    document.getElementById('downloadButton').addEventListener('click', handleDownload);
+    $('#langToggle').on('click', toggleLanguage);
+    $('#fileInput').on('change', handleFileSelect);
+    $('#viewButton').on('click', handleView);
+    $('#downloadButton').on('click', handleDownload);
     setupPresetButtons();
     setupDragAndDrop();
 }
 
 function setupPresetButtons() {
-    const presetButtons = document.querySelectorAll('.preset-button');
-
-    presetButtons.forEach(button => {
-        button.addEventListener('click', (event) => {
-            const preset = event.currentTarget.getAttribute('data-preset');
-            if (preset && COLUMN_PRESETS[preset]) {
-                applyPreset(preset);
-            }
-        });
+    $('.preset-button').on('click', function() {
+        const preset = $(this).data('preset');
+        if (preset && COLUMN_PRESETS[preset]) {
+            applyPreset(preset);
+        }
     });
 }
 
 function applyPreset(preset) {
-    const columnsInput = document.getElementById('columnsInput');
-    columnsInput.value = COLUMN_PRESETS[preset];
-
-    columnsInput.focus();
-    columnsInput.select();
+    const $columnsInput = $('#columnsInput');
+    $columnsInput.val(COLUMN_PRESETS[preset]);
+    $columnsInput.focus().select();
 }
 
 function toggleLanguage() {
@@ -51,37 +45,31 @@ function handleFileSelect(event) {
 }
 
 function setupDragAndDrop() {
-    const dropZone = document.getElementById('dropZone');
-    const fileInput = document.getElementById('fileInput');
-    const removeFileBtn = document.getElementById('removeFileBtn');
+    const $dropZone = $('#dropZone');
+    const $fileInput = $('#fileInput');
 
-    // Prevent default drag behaviors
     ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, preventDefaults, false);
-        document.body.addEventListener(eventName, preventDefaults, false);
+        $dropZone.on(eventName, preventDefaults);
+        $('body').on(eventName, preventDefaults);
     });
 
-    ['dragenter', 'dragover'].forEach(eventName => {
-        dropZone.addEventListener(eventName, () => {
-            dropZone.classList.add('drag-over');
-        }, false);
+    $dropZone.on('dragenter dragover', function() {
+        $(this).addClass('drag-over');
     });
 
-    ['dragleave', 'drop'].forEach(eventName => {
-        dropZone.addEventListener(eventName, () => {
-            dropZone.classList.remove('drag-over');
-        }, false);
+    $dropZone.on('dragleave drop', function() {
+        $(this).removeClass('drag-over');
     });
 
-    dropZone.addEventListener('drop', handleDrop, false);
+    $dropZone.on('drop', handleDrop);
 
-    dropZone.addEventListener('click', (e) => {
-        if (!e.target.closest('.remove-file-btn')) {
-            fileInput.click();
+    $dropZone.on('click', function(e) {
+        if (!$(e.target).closest('.remove-file-btn').length) {
+            $fileInput.click();
         }
     });
 
-    removeFileBtn.addEventListener('click', (e) => {
+    $('#removeFileBtn').on('click', function(e) {
         e.stopPropagation();
         removeFile();
     });
@@ -93,7 +81,7 @@ function preventDefaults(e) {
 }
 
 function handleDrop(e) {
-    const dt = e.dataTransfer;
+    const dt = e.originalEvent.dataTransfer;
     const files = dt.files;
 
     if (files.length > 0) {
@@ -104,58 +92,48 @@ function handleDrop(e) {
             return;
         }
 
-        if (file.size > 1048576) { // 1MB
+        if (file.size > 1048576) {
             showAlert('error', translations.errors.fileTooLarge);
             return;
         }
 
-        const fileInput = document.getElementById('fileInput');
         const dataTransfer = new DataTransfer();
         dataTransfer.items.add(file);
-        fileInput.files = dataTransfer.files;
+        $('#fileInput')[0].files = dataTransfer.files;
 
         updateFileInfo(file);
     }
 }
 
 function updateFileInfo(file) {
-    const dropZoneContent = document.querySelector('.drop-zone-content');
-    const fileInfo = document.getElementById('fileInfo');
-    const fileNameSpan = document.getElementById('fileName');
+    const $dropZoneContent = $('.drop-zone-content');
+    const $fileInfo = $('#fileInfo');
+    const $fileName = $('#fileName');
 
     if (file) {
-        dropZoneContent.style.display = 'none';
-        fileInfo.style.display = 'flex';
-        fileNameSpan.textContent = file.name;
-
-        document.getElementById('dropZone').classList.remove('drag-over');
+        $dropZoneContent.hide();
+        $fileInfo.show();
+        $fileName.text(file.name);
+        $('#dropZone').removeClass('drag-over');
     } else {
-        dropZoneContent.style.display = 'flex';
-        fileInfo.style.display = 'none';
-        fileNameSpan.textContent = '';
+        $dropZoneContent.show();
+        $fileInfo.hide();
+        $fileName.text('');
     }
 }
 
 function removeFile() {
-    const fileInput = document.getElementById('fileInput');
-    fileInput.value = '';
+    $('#fileInput').val('');
     updateFileInfo(null);
     hideAlert();
 }
 
 function validateForm() {
-    const fileInput = document.getElementById('fileInput');
-    const columnsInput = document.getElementById('columnsInput');
+    const file = $('#fileInput')[0].files[0];
+    const columns = $('#columnsInput').val().trim();
 
-    if (!fileInput.files || fileInput.files.length === 0) {
+    if (!file) {
         showAlert('error', translations.errors.noFile);
-        return false;
-    }
-
-    const file = fileInput.files[0];
-
-    if (file.size > 1048576) {
-        showAlert('error', translations.errors.fileTooLarge);
         return false;
     }
 
@@ -164,41 +142,17 @@ function validateForm() {
         return false;
     }
 
-    const columns = columnsInput.value.trim();
+    if (file.size > 1048576) {
+        showAlert('error', translations.errors.fileTooLarge);
+        return false;
+    }
+
     if (!columns) {
         showAlert('error', translations.errors.noColumns);
         return false;
     }
 
     return true;
-}
-
-function showAlert(type, message) {
-    const alert = document.getElementById('alert');
-    const alertMessage = document.getElementById('alertMessage');
-
-    alert.className = 'alert visible alert-' + type;
-    alertMessage.textContent = message;
-
-    setTimeout(() => {
-        alert.classList.remove('visible');
-    }, 5000);
-}
-
-function hideAlert() {
-    document.getElementById('alert').classList.remove('visible');
-}
-
-function showLoading() {
-    document.getElementById('loading').classList.add('visible');
-    document.getElementById('viewButton').disabled = true;
-    document.getElementById('downloadButton').disabled = true;
-}
-
-function hideLoading() {
-    document.getElementById('loading').classList.remove('visible');
-    document.getElementById('viewButton').disabled = false;
-    document.getElementById('downloadButton').disabled = false;
 }
 
 async function handleView() {
@@ -208,10 +162,10 @@ async function handleView() {
     showLoading();
 
     try {
-        const columnsInput = document.getElementById('columnsInput').value;
+        const columnsInput = $('#columnsInput').val();
 
         const formData = new FormData();
-        formData.append('file', document.getElementById('fileInput').files[0]);
+        formData.append('file', $('#fileInput')[0].files[0]);
         formData.append('columns', columnsInput);
         formData.append('output_format', 'json');
 
@@ -227,7 +181,6 @@ async function handleView() {
             return;
         }
 
-        // Display results with column order from user input
         const columnOrder = columnsInput.split(',').map(col => col.trim()).filter(col => col);
         displayResults(data.data, columnOrder);
         showAlert('success', translations.success.processed + ' (' + data.count + ' ' + translations.rowsCount + ')');
@@ -248,8 +201,8 @@ async function handleDownload() {
 
     try {
         const formData = new FormData();
-        formData.append('file', document.getElementById('fileInput').files[0]);
-        formData.append('columns', document.getElementById('columnsInput').value);
+        formData.append('file', $('#fileInput')[0].files[0]);
+        formData.append('columns', $('#columnsInput').val());
         formData.append('output_format', 'csv');
 
         const response = await fetch('/api/process', {
@@ -263,13 +216,11 @@ async function handleDownload() {
             return;
         }
 
-        // Download file
         const blob = await response.blob();
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
 
-        // Get filename from Content-Disposition header or use default
         const contentDisposition = response.headers.get('Content-Disposition');
         let filename = 'filtered_data.csv';
         if (contentDisposition) {
@@ -296,76 +247,76 @@ async function handleDownload() {
 }
 
 function handleError(data, status) {
+    let errorMessage = translations.errors.processingError;
+
     if (status === 413) {
-        showAlert('error', translations.errors.fileTooLarge);
-    } else if (data.error === 'Columns not found in CSV' && data.missing) {
-        const missingCols = data.missing.join(', ');
-        showAlert('error', translations.errors.columnsNotFound + ': ' + missingCols);
-    } else if (data.error === 'Invalid CSV file') {
-        showAlert('error', translations.errors.invalidCSV + ': ' + (data.message || ''));
-    } else {
-        showAlert('error', translations.errors.processingError + ': ' + (data.message || data.error || ''));
+        errorMessage = translations.errors.fileTooLarge;
+    } else if (data.error) {
+        if (data.missing) {
+            errorMessage = translations.errors.columnsNotFound + ': ' + data.missing.join(', ');
+        } else if (data.error.includes('CSV')) {
+            errorMessage = translations.errors.invalidCSV;
+        } else {
+            errorMessage = data.error;
+        }
     }
+
+    showAlert('error', errorMessage);
 }
 
 function displayResults(data, columnOrder) {
-    const resultsContainer = document.getElementById('resultsContainer');
-    const tableHead = document.getElementById('tableHead');
-    const tableBody = document.getElementById('tableBody');
-    const rowsCount = document.getElementById('rowsCount');
-    const noResults = document.getElementById('noResults');
-    const resultsTable = document.getElementById('resultsTable');
-    const csvText = document.getElementById('csvText');
-    const viewToggle = document.getElementById('viewToggle');
+    const $resultsContainer = $('#resultsContainer');
+    const $tableHead = $('#tableHead');
+    const $tableBody = $('#tableBody');
+    const $rowsCount = $('#rowsCount');
+    const $noResults = $('#noResults');
+    const $resultsTable = $('#resultsTable');
+    const $viewToggle = $('#viewToggle');
 
-    tableHead.innerHTML = '';
-    tableBody.innerHTML = '';
-    csvText.textContent = '';
+    $tableHead.empty();
+    $tableBody.empty();
+    $('#csvText').text('');
 
     if (!data || data.length === 0) {
-        resultsTable.style.display = 'none';
-        noResults.style.display = 'block';
-        viewToggle.style.display = 'none';
-        resultsContainer.classList.add('visible');
+        $resultsTable.hide();
+        $noResults.show();
+        $viewToggle.hide();
+        $resultsContainer.addClass('visible');
         showAlert('info', translations.noResults);
         return;
     }
 
-    noResults.style.display = 'none';
-    resultsTable.style.display = 'table';
-    viewToggle.style.display = 'flex';
+    $noResults.hide();
+    $resultsTable.show();
+    $viewToggle.show();
 
-    rowsCount.textContent = data.length;
+    $rowsCount.text(data.length);
 
     const columns = columnOrder && columnOrder.length > 0 ? columnOrder : Object.keys(data[0]);
 
-    const headerRow = document.createElement('tr');
+    const $headerRow = $('<tr>');
     columns.forEach(col => {
-        const th = document.createElement('th');
-        th.textContent = col;
-        headerRow.appendChild(th);
+        $headerRow.append($('<th>').text(col));
     });
-    tableHead.appendChild(headerRow);
+    $tableHead.append($headerRow);
 
     data.forEach(row => {
-        const tr = document.createElement('tr');
+        const $tr = $('<tr>');
         columns.forEach(col => {
-            const td = document.createElement('td');
-            td.textContent = row[col] || '';
-            tr.appendChild(td);
+            $tr.append($('<td>').text(row[col] || ''));
         });
-        tableBody.appendChild(tr);
+        $tableBody.append($tr);
     });
 
     generateCSVText(data, columns);
     setupViewToggle();
-    resultsContainer.classList.add('visible');
-    resultsContainer.scrollIntoView({behavior: 'smooth', block: 'start'});
+
+    $resultsContainer.addClass('visible');
+    $resultsContainer[0].scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function generateCSVText(data, columns) {
-    const csvText = document.getElementById('csvText');
-
+    const $csvText = $('#csvText');
     let csvContent = '';
 
     csvContent += columns.join(',') + '\n';
@@ -373,7 +324,7 @@ function generateCSVText(data, columns) {
     data.forEach(row => {
         const rowValues = columns.map(col => {
             const value = row[col] || '';
-            // Escape values that contain commas or quotes
+            // Escape CSV special characters
             if (value.includes(',') || value.includes('"') || value.includes('\n')) {
                 return '"' + value.replace(/"/g, '""') + '"';
             }
@@ -382,58 +333,82 @@ function generateCSVText(data, columns) {
         csvContent += rowValues.join(',') + '\n';
     });
 
-    csvText.textContent = csvContent;
+    $csvText.text(csvContent);
 }
 
 function setupViewToggle() {
-    const tableViewBtn = document.getElementById('tableViewBtn');
-    const csvViewBtn = document.getElementById('csvViewBtn');
-    const tableView = document.getElementById('tableView');
-    const csvView = document.getElementById('csvView');
-    const copyCsvBtn = document.getElementById('copyCsvBtn');
+    const $tableViewBtn = $('#tableViewBtn');
+    const $csvViewBtn = $('#csvViewBtn');
+    const $tableView = $('#tableView');
+    const $csvView = $('#csvView');
+    const $copyCsvBtn = $('#copyCsvBtn');
 
-    const newTableBtn = tableViewBtn.cloneNode(true);
-    const newCsvBtn = csvViewBtn.cloneNode(true);
-    const newCopyBtn = copyCsvBtn.cloneNode(true);
+    $tableViewBtn.off('click');
+    $csvViewBtn.off('click');
+    $copyCsvBtn.off('click');
 
-    tableViewBtn.parentNode.replaceChild(newTableBtn, tableViewBtn);
-    csvViewBtn.parentNode.replaceChild(newCsvBtn, csvViewBtn);
-    copyCsvBtn.parentNode.replaceChild(newCopyBtn, copyCsvBtn);
-
-    newTableBtn.addEventListener('click', () => {
-        newTableBtn.classList.add('active');
-        newCsvBtn.classList.remove('active');
-        tableView.style.display = 'block';
-        csvView.style.display = 'none';
+    $tableViewBtn.on('click', function() {
+        $(this).addClass('active');
+        $csvViewBtn.removeClass('active');
+        $tableView.show();
+        $csvView.hide();
     });
 
-    newCsvBtn.addEventListener('click', () => {
-        newCsvBtn.classList.add('active');
-        newTableBtn.classList.remove('active');
-        tableView.style.display = 'none';
-        csvView.style.display = 'block';
+    $csvViewBtn.on('click', function() {
+        $(this).addClass('active');
+        $tableViewBtn.removeClass('active');
+        $tableView.hide();
+        $csvView.show();
     });
 
-    newCopyBtn.addEventListener('click', async () => {
-        const csvText = document.getElementById('csvText');
+    $copyCsvBtn.on('click', async function() {
+        const csvText = $('#csvText').text();
         try {
-            await navigator.clipboard.writeText(csvText.textContent);
+            await navigator.clipboard.writeText(csvText);
             showAlert('success', translations.success.copied || 'CSV copied to clipboard');
         } catch (err) {
             // Fallback for older browsers
-            const textArea = document.createElement('textarea');
-            textArea.value = csvText.textContent;
-            textArea.style.position = 'fixed';
-            textArea.style.opacity = '0';
-            document.body.appendChild(textArea);
-            textArea.select();
+            const $textArea = $('<textarea>')
+                .val(csvText)
+                .css({
+                    position: 'fixed',
+                    opacity: 0
+                })
+                .appendTo('body');
+
+            $textArea[0].select();
+
             try {
                 document.execCommand('copy');
                 showAlert('success', translations.success.copied || 'CSV copied to clipboard');
             } catch (err2) {
                 showAlert('error', translations.errors.copyFailed || 'Failed to copy');
             }
-            document.body.removeChild(textArea);
+
+            $textArea.remove();
         }
     });
 }
+
+function showAlert(type, message) {
+    const $alert = $('#alert');
+    const $alertMessage = $('#alertMessage');
+
+    $alert.removeClass('alert-error alert-success alert-info');
+    $alert.addClass('alert-' + type);
+    $alertMessage.text(message);
+    $alert.addClass('visible');
+}
+
+function hideAlert() {
+    $('#alert').removeClass('visible');
+}
+
+function showLoading() {
+    $('#loading').addClass('visible');
+}
+
+function hideLoading() {
+    $('#loading').removeClass('visible');
+}
+
