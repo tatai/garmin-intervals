@@ -35,16 +35,27 @@
             <h2>{{ t.appTitle }}</h2>
             <p>{{ t.appDescription }}</p>
 
-            <form id="uploadForm">
                 <div class="form-group">
                     <label class="form-label">{{ t.uploadLabel }}</label>
-                    <div class="file-input-wrapper">
-                        <input type="file" id="fileInput" class="file-input" accept=".csv">
-                        <button type="button" class="file-input-button" onclick="document.getElementById('fileInput').click()">
-                            <span class="material-icons">upload_file</span>
-                            <span>{{ t.uploadButton }}</span>
-                        </button>
-                        <span class="file-name" id="fileName">{{ t.noFileSelected }}</span>
+
+                    <div class="drop-zone" id="dropZone">
+                        <div class="drop-zone-content">
+                            <span class="material-icons drop-zone-icon">cloud_upload</span>
+                            <p class="drop-zone-text" id="dropZoneText">{{ t.dropZoneText if t.dropZoneText else 'Drag & drop your CSV file here' }}</p>
+                            <span class="drop-zone-or">{{ t.dropZoneOr if t.dropZoneOr else 'or' }}</span>
+                            <input type="file" id="fileInput" class="file-input" accept=".csv">
+                            <button type="button" class="file-input-button" onclick="document.getElementById('fileInput').click()">
+                                <span class="material-icons">upload_file</span>
+                                <span>{{ t.uploadButton }}</span>
+                            </button>
+                        </div>
+                        <div class="drop-zone-file-info" id="fileInfo" style="display: none;">
+                            <span class="material-icons">description</span>
+                            <span id="fileName"></span>
+                            <button type="button" class="remove-file-btn" id="removeFileBtn">
+                                <span class="material-icons">close</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
 

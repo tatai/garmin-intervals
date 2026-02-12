@@ -1,37 +1,24 @@
-// Global state
 let currentLang = window.APP_CONFIG.lang;
 let translations = window.APP_CONFIG.translations;
 
-// Column presets
 const COLUMN_PRESETS = {
     series: 'Intervalo,Tipo de paso,Tiempo,Distancia,Ritmo medio,Frecuencia cardiaca media,Ascenso total,Descenso total',
     training: 'Vueltas,Tiempo,Tiempo acumulado,Distanciakm,Ritmo mediomin/km,Frecuencia cardiaca mediappm,Ascenso totalm,Descenso totalm'
 };
 
-// Initialize app
 document.addEventListener('DOMContentLoaded', () => {
     setupEventListeners();
 });
 
-// Setup event listeners
 function setupEventListeners() {
-    // Language toggle - redirect to other language
     document.getElementById('langToggle').addEventListener('click', toggleLanguage);
-
-    // File input change
     document.getElementById('fileInput').addEventListener('change', handleFileSelect);
-
-    // View button
     document.getElementById('viewButton').addEventListener('click', handleView);
-
-    // Download button
     document.getElementById('downloadButton').addEventListener('click', handleDownload);
-
-    // Column preset buttons
     setupPresetButtons();
+    setupDragAndDrop();
 }
 
-// Setup preset buttons
 function setupPresetButtons() {
     const presetButtons = document.querySelectorAll('.preset-button');
 
@@ -60,13 +47,100 @@ function toggleLanguage() {
 
 function handleFileSelect(event) {
     const file = event.target.files[0];
-    const fileName = document.getElementById('fileName');
+    updateFileInfo(file);
+}
+
+function setupDragAndDrop() {
+    const dropZone = document.getElementById('dropZone');
+    const fileInput = document.getElementById('fileInput');
+    const removeFileBtn = document.getElementById('removeFileBtn');
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false);
+    });
+
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => {
+            dropZone.classList.add('drag-over');
+        }, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, () => {
+            dropZone.classList.remove('drag-over');
+        }, false);
+    });
+
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    dropZone.addEventListener('click', (e) => {
+        if (!e.target.closest('.remove-file-btn')) {
+            fileInput.click();
+        }
+    });
+
+    removeFileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        removeFile();
+    });
+}
+
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+
+    if (files.length > 0) {
+        const file = files[0];
+
+        if (!file.name.endsWith('.csv')) {
+            showAlert('error', translations.errors.invalidFormat);
+            return;
+        }
+
+        if (file.size > 1048576) { // 1MB
+            showAlert('error', translations.errors.fileTooLarge);
+            return;
+        }
+
+        const fileInput = document.getElementById('fileInput');
+        const dataTransfer = new DataTransfer();
+        dataTransfer.items.add(file);
+        fileInput.files = dataTransfer.files;
+
+        updateFileInfo(file);
+    }
+}
+
+function updateFileInfo(file) {
+    const dropZoneContent = document.querySelector('.drop-zone-content');
+    const fileInfo = document.getElementById('fileInfo');
+    const fileNameSpan = document.getElementById('fileName');
 
     if (file) {
-        fileName.textContent = file.name;
+        dropZoneContent.style.display = 'none';
+        fileInfo.style.display = 'flex';
+        fileNameSpan.textContent = file.name;
+
+        document.getElementById('dropZone').classList.remove('drag-over');
     } else {
-        fileName.textContent = translations.noFileSelected;
+        dropZoneContent.style.display = 'flex';
+        fileInfo.style.display = 'none';
+        fileNameSpan.textContent = '';
     }
+}
+
+function removeFile() {
+    const fileInput = document.getElementById('fileInput');
+    fileInput.value = '';
+    updateFileInfo(null);
+    hideAlert();
 }
 
 function validateForm() {
@@ -166,7 +240,6 @@ async function handleView() {
     }
 }
 
-// Handle download button click
 async function handleDownload() {
     if (!validateForm()) return;
 
@@ -222,7 +295,6 @@ async function handleDownload() {
     }
 }
 
-// Handle error response
 function handleError(data, status) {
     if (status === 413) {
         showAlert('error', translations.errors.fileTooLarge);
@@ -236,7 +308,6 @@ function handleError(data, status) {
     }
 }
 
-// Display results in table
 function displayResults(data, columnOrder) {
     const resultsContainer = document.getElementById('resultsContainer');
     const tableHead = document.getElementById('tableHead');
@@ -247,7 +318,6 @@ function displayResults(data, columnOrder) {
     const csvText = document.getElementById('csvText');
     const viewToggle = document.getElementById('viewToggle');
 
-    // Clear previous results
     tableHead.innerHTML = '';
     tableBody.innerHTML = '';
     csvText.textContent = '';
@@ -261,18 +331,14 @@ function displayResults(data, columnOrder) {
         return;
     }
 
-    // Hide no results message and show table
     noResults.style.display = 'none';
     resultsTable.style.display = 'table';
     viewToggle.style.display = 'flex';
 
-    // Update count
     rowsCount.textContent = data.length;
 
-    // Use column order from user input, or fall back to first row keys
     const columns = columnOrder && columnOrder.length > 0 ? columnOrder : Object.keys(data[0]);
 
-    // Create table header
     const headerRow = document.createElement('tr');
     columns.forEach(col => {
         const th = document.createElement('th');
@@ -281,7 +347,6 @@ function displayResults(data, columnOrder) {
     });
     tableHead.appendChild(headerRow);
 
-    // Create table rows
     data.forEach(row => {
         const tr = document.createElement('tr');
         columns.forEach(col => {
@@ -292,30 +357,19 @@ function displayResults(data, columnOrder) {
         tableBody.appendChild(tr);
     });
 
-    // Generate CSV text view
     generateCSVText(data, columns);
-
-    // Setup view toggle listeners
     setupViewToggle();
-
-    // Show results
     resultsContainer.classList.add('visible');
-
-    // Scroll to results
-    resultsContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    resultsContainer.scrollIntoView({behavior: 'smooth', block: 'start'});
 }
 
-// Generate CSV text for copy/paste
 function generateCSVText(data, columns) {
     const csvText = document.getElementById('csvText');
 
-    // Create CSV string
     let csvContent = '';
 
-    // Add header
     csvContent += columns.join(',') + '\n';
 
-    // Add data rows
     data.forEach(row => {
         const rowValues = columns.map(col => {
             const value = row[col] || '';
@@ -331,7 +385,6 @@ function generateCSVText(data, columns) {
     csvText.textContent = csvContent;
 }
 
-// Setup view toggle between table and CSV
 function setupViewToggle() {
     const tableViewBtn = document.getElementById('tableViewBtn');
     const csvViewBtn = document.getElementById('csvViewBtn');
@@ -339,7 +392,6 @@ function setupViewToggle() {
     const csvView = document.getElementById('csvView');
     const copyCsvBtn = document.getElementById('copyCsvBtn');
 
-    // Remove existing listeners by cloning
     const newTableBtn = tableViewBtn.cloneNode(true);
     const newCsvBtn = csvViewBtn.cloneNode(true);
     const newCopyBtn = copyCsvBtn.cloneNode(true);
@@ -348,7 +400,6 @@ function setupViewToggle() {
     csvViewBtn.parentNode.replaceChild(newCsvBtn, csvViewBtn);
     copyCsvBtn.parentNode.replaceChild(newCopyBtn, copyCsvBtn);
 
-    // Add click listeners
     newTableBtn.addEventListener('click', () => {
         newTableBtn.classList.add('active');
         newCsvBtn.classList.remove('active');
@@ -363,7 +414,6 @@ function setupViewToggle() {
         csvView.style.display = 'block';
     });
 
-    // Copy CSV functionality
     newCopyBtn.addEventListener('click', async () => {
         const csvText = document.getElementById('csvText');
         try {
@@ -387,6 +437,3 @@ function setupViewToggle() {
         }
     });
 }
-
-
-

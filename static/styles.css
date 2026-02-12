@@ -88,6 +88,96 @@ body {
     color: #333;
 }
 
+/* Drag & Drop Zone */
+.drop-zone {
+    border: 2px dashed #90caf9;
+    border-radius: 8px;
+    padding: 32px;
+    text-align: center;
+    background-color: #f5f9ff;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    position: relative;
+}
+
+.drop-zone:hover {
+    border-color: #1976d2;
+    background-color: #e3f2fd;
+}
+
+.drop-zone.drag-over {
+    border-color: #1976d2;
+    background-color: #bbdefb;
+    border-style: solid;
+    transform: scale(1.02);
+}
+
+.drop-zone-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.drop-zone-icon {
+    font-size: 48px;
+    color: #1976d2;
+}
+
+.drop-zone-text {
+    font-size: 16px;
+    color: #666;
+    margin: 0;
+}
+
+.drop-zone-or {
+    font-size: 14px;
+    color: #999;
+    margin: 8px 0;
+}
+
+.drop-zone-file-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px;
+    background-color: #e8f5e9;
+    border-radius: 4px;
+}
+
+.drop-zone-file-info .material-icons {
+    color: #2e7d32;
+    font-size: 24px;
+}
+
+.drop-zone-file-info span:not(.material-icons) {
+    color: #2e7d32;
+    font-weight: 500;
+    flex: 1;
+    text-align: left;
+}
+
+.remove-file-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    border-radius: 50%;
+    transition: background-color 0.2s;
+}
+
+.remove-file-btn:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.remove-file-btn .material-icons {
+    font-size: 20px;
+    color: #666;
+}
+
 /* Column Presets */
 .column-presets {
     display: flex;
@@ -418,6 +508,18 @@ tr:hover {
 
     .card {
         padding: 16px;
+    }
+
+    .drop-zone {
+        padding: 24px 16px;
+    }
+
+    .drop-zone-icon {
+        font-size: 36px;
+    }
+
+    .drop-zone-text {
+        font-size: 14px;
     }
 
     .column-presets {

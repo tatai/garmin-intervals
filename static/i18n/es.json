@@ -4,6 +4,8 @@
   "appDescription": "Sube tu archivo CSV de intervalos generado de Garmin Connect y selecciona las columnas que quieres extraer",
   "uploadLabel": "Intervalos (archivo CSV)",
   "uploadButton": "Elegir archivo",
+  "dropZoneText": "Puedes arrastrar y soltar tu archivo CSV aquí",
+  "dropZoneOr": "o",
   "noFileSelected": "No hay archivo seleccionado",
   "columnsLabel": "Columnas a extraer",
   "columnsPlaceholder": "Introduce nombres de columnas separados por comas",
