@@ -3,7 +3,7 @@ let translations = window.APP_CONFIG.translations;
 
 const COLUMN_PRESETS = {
     series: 'Intervalo,Tipo de paso,Tiempo,Distancia,Ritmo medio,Frecuencia cardiaca media,Ascenso total,Descenso total',
-    training: 'Vueltas,Tiempo,Tiempo acumulado,Distanciakm,Ritmo mediomin/km,Frecuencia cardiaca mediappm,Ascenso totalm,Descenso totalm'
+    training: 'Vueltas,Tiempo,Tiempo acumulado,Distancia km,Ritmo medio min/km,Frecuencia cardiaca media ppm,Ascenso total m,Descenso total m'
 };
 
 $(document).ready(function() {
